@@ -1,4 +1,4 @@
-nigg# Challenge-Submission
+# Challenge-Submission
 import random
 from datetime import datetime, timedelta
 
