@@ -1,0 +1,17 @@
+// script.js
+document.getElementById('dynamic-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Collect form data
+    const formData = new FormData(event.target);
+    const formObject = {};
+    formData.forEach((value, key) => {
+        formObject[key] = value;
+    });
+
+    // Log form data to console (or send it to a server)
+    console.log('Form Data:', formObject);
+
+    // Optionally, reset the form after submission
+    event.target.reset();
+});
