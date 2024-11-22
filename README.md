@@ -184,4 +184,189 @@ def virtual_assistant(citizen):
 citizen = citizens[0]  # Pick a citizen
 virtual_assistant(citizen)
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Digital Services</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Welcome to Government Digital Services</h1>
+            <p>Your personalized services, just a click away!</p>
+        </header>
+
+        <section class="user-info">
+            <h2>Login</h2>
+            <form id="login-form">
+                <label for="user-id">Enter Your User ID:</label>
+                <input type="text" id="user-id" name="user-id" placeholder="Enter User ID" required>
+                <button type="submit">Get Services</button>
+            </form>
+        </section>
+
+        <section id="recommendations" class="hidden">
+            <h2>Your Recommended Services</h2>
+            <div id="services-list">
+                <!-- Personalized services will be displayed here -->
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2024 Government Digital Services | All Rights Reserved</p>
+        </footer>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    color: #333;
+}
+
+.container {
+    width: 80%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+h1 {
+    font-size: 2.5em;
+    color: #2c3e50;
+}
+
+h2 {
+    font-size: 1.8em;
+    color: #34495e;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+form label {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+form input {
+    padding: 10px;
+    margin-bottom: 15px;
+    width: 80%;
+    max-width: 400px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+form button {
+    padding: 12px 25px;
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1em;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #2ecc71;
+}
+
+.hidden {
+    display: none;
+}
+
+#services-list {
+    padding: 20px;
+    background-color: #ecf0f1;
+    border-radius: 5px;
+}
+
+.service-item {
+    background-color: #fff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+footer {
+    text-align: center;
+    margin-top: 50px;
+    font-size: 0.9em;
+    color: #7f8c8d;
+}
+document.getElementById('login-form').addEventListener('submit', function(event) {
+    event.preventDefault();  // Prevent form submission
+    
+    const userId = document.getElementById('user-id').value;
+    
+    if (!userId) {
+        alert("Please enter a User ID.");
+        return;
+    }
+
+    // Send user ID to the Flask back-end
+    fetch('/personalized_service', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ user_id: userId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Handle the response from the server
+        const recommendationsSection = document.getElementById('recommendations');
+        const servicesList = document.getElementById('services-list');
+        
+        // Clear previous recommendations
+        servicesList.innerHTML = '';
+
+        if (data.error) {
+            servicesList.innerHTML = `<p>${data.error}</p>`;
+        } else {
+            // Display the personalized message and recommendations
+            servicesList.innerHTML = `<p>${data.message}</p>`;
+            
+            data.recommended_services.forEach(service => {
+                const serviceItem = document.createElement('div');
+                serviceItem.classList.add('service-item');
+                serviceItem.textContent = service;
+                servicesList.appendChild(serviceItem);
+            });
+
+            // Show recommendations section
+            recommendationsSection.classList.remove('hidden');
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("Something went wrong, please try again later.");
+    });
+});
+
+
 
